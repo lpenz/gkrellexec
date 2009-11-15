@@ -31,21 +31,64 @@ static struct
 		GtkWidget *timeoutWidget;
 		char cmdline[256];
 		int timeout;
+		GkrellmDecal *decaltext;
 	}
 	processes[GKRELLEXEC_PROCESSES_MAXNUM];
+	GkrellmPanel *panel;
+	gint style_id;
+	GkrellmMonitor *plugin_mon;
 }
 Config;
 
 
-static void update_plugin()
+static void update_plugin(void)
 {
-	/* See examples below */
+	static int first = 1;
+	int i;
+
+	if(first) {
+		for(i=0;i<NMEMB(Config.processes); i++)
+			gkrellm_draw_decal_text(Config.panel, Config.processes[i].decaltext, "", -1);
+		gkrellm_draw_panel_layers(Config.panel);
+		first = 0;
+		return;
+	}
+
+	for(i=0;i<NMEMB(Config.processes); i++) {
+		gkrellm_draw_decal_text(Config.panel, Config.processes[i].decaltext, Config.processes[i].cmdline, -1);
+	}
+
+    gkrellm_draw_panel_layers(Config.panel);
 }
 
 
-static void create_plugin(GtkWidget *vbox, gint first_create)
+static void create_plugin(GtkWidget *vbox, gint firstcreate)
 {
-	/* See examples below */
+	GkrellmStyle *style;
+	GkrellmMargin *margin;
+    GkrellmTextstyle *ts;
+	int i;
+	gint prevy = 0;
+	gint prevh = 0;
+
+	if (firstcreate)
+		Config.panel = gkrellm_panel_new0();
+
+	style = gkrellm_meter_style(Config.style_id);
+	ts = gkrellm_meter_textstyle(Config.style_id);
+	margin = gkrellm_get_style_margins(style);
+
+	for(i=0;i<NMEMB(Config.processes); i++) {
+		Config.processes[i].decaltext = gkrellm_create_decal_text(Config.panel, "WWW", ts, style, 0, prevy + prevh + 2, -1);
+		prevy = Config.processes[i].decaltext->y;
+		prevh = Config.processes[i].decaltext->h;
+		gkrellm_decal_on_top_layer(Config.processes[i].decaltext, TRUE);
+		gkrellm_draw_decal_text(Config.panel, Config.processes[i].decaltext, "", -1);
+	}
+
+	gkrellm_panel_configure(Config.panel, NULL, style);
+	gkrellm_panel_create(vbox, Config.plugin_mon, Config.panel);
+    gkrellm_draw_panel_layers(Config.panel);
 }
 
 
@@ -149,7 +192,7 @@ static void load_plugin_config(gchar *arg)
 }
 
 
-static GkrellmMonitor  plugin_mon  =
+static GkrellmMonitor plugin_mon =
 {
 	"gkrellexec",   /* Name, for config tab.        */
 	0,              /* Id,  0 if a plugin           */
@@ -171,6 +214,8 @@ static GkrellmMonitor  plugin_mon  =
 
 GkrellmMonitor *gkrellm_init_plugin(void)
 {
+	Config.style_id = gkrellm_add_meter_style(&plugin_mon, CONFIG_KEYWORD);
+	Config.plugin_mon = &plugin_mon;
 	return &plugin_mon;
 }
 
