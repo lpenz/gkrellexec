@@ -32,7 +32,7 @@ static struct
 		char cmdline[256];
 		int timeout;
 	}
-	processes[1];
+	processes[GKRELLEXEC_PROCESSES_MAXNUM];
 }
 Config;
 
