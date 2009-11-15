@@ -76,7 +76,7 @@ static void create_plugin_tab(GtkWidget * tab_vbox)
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 		Config.processes[i].cmdlineWidget = gtk_entry_new_with_max_length(256);
 		gtk_box_pack_start(GTK_BOX(hbox), Config.processes[i].cmdlineWidget, FALSE, TRUE, 0);
-		gtk_entry_set_text(GTK_ENTRY(Config.processes[i].timeoutWidget), Config.processes[i].cmdline);
+		gtk_entry_set_text(GTK_ENTRY(Config.processes[i].cmdlineWidget), Config.processes[i].cmdline);
 
 		/* Timeout: */
 		hbox = gtk_hbox_new(FALSE, 10);
