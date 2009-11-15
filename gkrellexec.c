@@ -145,7 +145,6 @@ static void load_plugin_config(gchar *arg)
 			snprintf(Config.processes[i].cmdline, sizeof(Config.processes[i].cmdline), "%s", item);
 		if (strcmp(config, "timeout") == 0)
 			sscanf(item, "%d\n", &Config.processes[i].timeout);
-		i++;
 	}
 }
 
