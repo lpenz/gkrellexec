@@ -43,6 +43,7 @@ static struct
 }
 GkrExec;
 
+/****************************************************************************/
 
 static void update_plugin(void)
 {
@@ -64,6 +65,7 @@ static void update_plugin(void)
 	gkrellm_draw_panel_layers(GkrExec.panel);
 }
 
+/****************************************************************************/
 
 static void create_plugin(GtkWidget *vbox, gint firstcreate)
 {
@@ -94,6 +96,7 @@ static void create_plugin(GtkWidget *vbox, gint firstcreate)
 	gkrellm_draw_panel_layers(GkrExec.panel);
 }
 
+/****************************************************************************/
 
 static GtkWidget* create_option(GtkWidget *parent, const char *name, int size, const char *starttext)
 {
@@ -168,6 +171,7 @@ static void apply_plugin_config(void)
 #endif
 }
 
+/****************************************************************************/
 
 static void save_plugin_config(FILE *f)
 {
@@ -197,24 +201,25 @@ static void load_plugin_config(gchar *arg)
 	}
 }
 
+/****************************************************************************/
 
 static GkrellmMonitor plugin_mon =
 {
-	"gkrellexec",   /* Name, for config tab.        */
-	0,              /* Id,  0 if a plugin           */
-	create_plugin,  /* The create_plugin() function */
-	update_plugin,  /* The update_plugin() function */
+	"gkrellexec",        /* Name, for config tab.        */
+	0,                   /* Id,  0 if a plugin           */
+	create_plugin,       /* The create_plugin() function */
+	update_plugin,       /* The update_plugin() function */
 	create_plugin_tab,   /* The create_plugin_tab() config function */
 	apply_plugin_config, /* The apply_plugin_config() function      */
 	save_plugin_config,  /* The save_plugin_config() function  */
 	load_plugin_config,  /* The load_plugin_config() function  */
 	CONFIG_KEYWORD,      /* config keyword                     */
-	NULL,           /* Undefined 2  */
-	NULL,           /* Undefined 1  */
-	NULL,           /* Undefined 0  */
-	PLUGIN_PLACEMENT, /* Insert plugin before this monitor.       */
-	NULL,           /* Handle if a plugin, filled in by GKrellM */
-	NULL            /* path if a plugin, filled in by GKrellM   */
+	NULL,                /* Undefined 2  */
+	NULL,                /* Undefined 1  */
+	NULL,                /* Undefined 0  */
+	PLUGIN_PLACEMENT,    /* Insert plugin before this monitor.       */
+	NULL,                /* Handle if a plugin, filled in by GKrellM */
+	NULL                 /* path if a plugin, filled in by GKrellM   */
 };
 
 
