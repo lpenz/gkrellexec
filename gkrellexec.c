@@ -35,9 +35,15 @@ static struct
 		cfg;
 		struct {
 			pid_t pid;
+			enum {
+				PROC_OK,
+				PROC_ERR,
+				PROC_TIMEOUT
+			}
+			last;
+			int timedout;
+			int waitstatus;
 			long uptstart;
-			int ok;
-			int status;
 		}
 		sts;
 		struct {
@@ -73,11 +79,14 @@ static void update_plugin(void)
 {
 	int i;
 	int status;
+	long upt;
 	GkrellmTicks *t = gkrellm_ticks();
 
 	/* Only update once a second. */
 	if (t->second_tick == 0)
 		return;
+
+	upt = uptime();
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
 		/* Disabled */
@@ -91,7 +100,7 @@ static void update_plugin(void)
 				case -1:
 					/* Error */
 					GkrExec.proc[i].sts.pid = 0;
-					GkrExec.proc[i].sts.ok = 0;
+					GkrExec.proc[i].sts.last = PROC_ERR;
 					break;
 				case 0:
 					/* Child */
@@ -109,24 +118,39 @@ static void update_plugin(void)
 			case -1:
 				/* Error */
 				GkrExec.proc[i].sts.pid = 0;
-				GkrExec.proc[i].sts.ok = 0;
+				GkrExec.proc[i].sts.last = PROC_ERR;
 				break;
 			case 0:
-				/* No change */
+				/* No change, timeout? */
+				if (upt - GkrExec.proc[i].sts.uptstart > GkrExec.proc[i].cfg.timeout) {
+					/* Timeout */
+					kill(GkrExec.proc[i].sts.pid, SIGKILL);
+					GkrExec.proc[i].sts.pid = 0;
+					GkrExec.proc[i].sts.last = PROC_TIMEOUT;
+				}
 				break;
 			default:
 				/* Exited */
-				GkrExec.proc[i].sts.ok = WIFEXITED(status) && WEXITSTATUS(status) == 0;
-				GkrExec.proc[i].sts.status = status;
+				if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+					GkrExec.proc[i].sts.last = PROC_OK;
+				else
+					GkrExec.proc[i].sts.last = PROC_ERR;
+				GkrExec.proc[i].sts.waitstatus = status;
 				GkrExec.proc[i].sts.pid = 0;
 				break;
 		}
 	}
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
+		char last;
 		char tmp[300];
 		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.proc[i].widget.decaltext, "", -1);
-		snprintf(tmp, sizeof(tmp), "%c %s", GkrExec.proc[i].sts.ok ? 'O' : 'X', GkrExec.proc[i].cfg.cmdline);
+		switch(GkrExec.proc[i].sts.last) {
+			case PROC_OK:      last = 'O'; break;
+			case PROC_ERR:     last = 'E'; break;
+			case PROC_TIMEOUT: last = 'T'; break;
+		}
+		snprintf(tmp, sizeof(tmp), "%c %s", last, GkrExec.proc[i].cfg.cmdline);
 		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.proc[i].widget.decaltext, tmp, -1);
 	}
 
