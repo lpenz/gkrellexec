@@ -6,9 +6,10 @@
  */
 /****************************************************************************/
 
+#include <sys/sysinfo.h>
+#include <sys/wait.h>
 
 #include <gkrellm2/gkrellm.h>
-
 
 #define CONFIG_KEYWORD "gkrellexec"
 #define PLUGIN_PLACEMENT	MON_MAIL
@@ -33,6 +34,13 @@ static struct
 		}
 		config;
 		struct {
+			pid_t pid;
+			long uptstart;
+			int ok;
+			int status;
+		}
+		status;
+		struct {
 			GtkWidget *cmdline;
 			GtkWidget *timeout;
 			GkrellmDecal *decaltext;
@@ -48,13 +56,78 @@ GkrExec;
 
 /****************************************************************************/
 
+/**
+ * \brief  Returns kernel's uptime.
+ * \return Uptime in seconds.
+ */
+static long uptime(void)
+{
+	struct sysinfo si;
+	sysinfo(&si);
+	return si.uptime;
+}
+
+/****************************************************************************/
+
 static void update_plugin(void)
 {
 	int i;
+	int status;
+	GkrellmTicks *t = gkrellm_ticks();
+
+	/* Only update once a second. */
+	if (t->second_tick == 0)
+		return;
 
 	for (i = 0; i < NMEMB(GkrExec.processes); i++) {
+		/* Disabled */
+		if (! GkrExec.processes[i].config.cmdline[0])
+			continue;
+
+		/* Not running, run: */
+		if (GkrExec.processes[i].status.pid == 0) {
+			GkrExec.processes[i].status.pid = fork();
+			switch(GkrExec.processes[i].status.pid) {
+				case -1:
+					/* Error */
+					GkrExec.processes[i].status.pid = 0;
+					GkrExec.processes[i].status.ok = 0;
+					break;
+				case 0:
+					/* Child */
+					execl("/bin/sh", "/bin/sh", "-c", GkrExec.processes[i].config.cmdline, NULL);
+					exit(1);
+				default:
+					/* gkrellexec */
+					GkrExec.processes[i].status.uptstart = uptime();
+			}
+			continue;
+		}
+
+		/* Running, check status: */
+		switch(waitpid(GkrExec.processes[i].status.pid, &status, WNOHANG)) {
+			case -1:
+				/* Error */
+				GkrExec.processes[i].status.pid = 0;
+				GkrExec.processes[i].status.ok = 0;
+				break;
+			case 0:
+				/* No change */
+				break;
+			default:
+				/* Exited */
+				GkrExec.processes[i].status.ok = WIFEXITED(status) && WEXITSTATUS(status) == 0;
+				GkrExec.processes[i].status.status = status;
+				GkrExec.processes[i].status.pid = 0;
+				break;
+		}
+	}
+
+	for (i = 0; i < NMEMB(GkrExec.processes); i++) {
+		char tmp[300];
 		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.processes[i].widget.decaltext, "", -1);
-		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.processes[i].widget.decaltext, GkrExec.processes[i].config.cmdline, -1);
+		snprintf(tmp, sizeof(tmp), "%c %s", GkrExec.processes[i].status.ok ? 'O' : 'X', GkrExec.processes[i].config.cmdline);
+		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.processes[i].widget.decaltext, tmp, -1);
 	}
 
 	gkrellm_draw_panel_layers(GkrExec.panel);
