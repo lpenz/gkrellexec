@@ -27,18 +27,21 @@ static gchar AboutText[] =
 static struct
 {
 	struct {
-		GtkWidget *cmdlineWidget;
-		GtkWidget *timeoutWidget;
 		char cmdline[256];
 		int timeout;
-		GkrellmDecal *decaltext;
+		struct {
+			GtkWidget *cmdline;
+			GtkWidget *timeout;
+			GkrellmDecal *decaltext;
+		}
+		widget;
 	}
 	processes[GKRELLEXEC_PROCESSES_MAXNUM];
 	GkrellmPanel *panel;
 	gint style_id;
 	GkrellmMonitor *plugin_mon;
 }
-Config;
+GkrExec;
 
 
 static void update_plugin(void)
@@ -46,19 +49,19 @@ static void update_plugin(void)
 	static int first = 1;
 	int i;
 
-	if(first) {
-		for(i=0;i<NMEMB(Config.processes); i++)
-			gkrellm_draw_decal_text(Config.panel, Config.processes[i].decaltext, "", -1);
-		gkrellm_draw_panel_layers(Config.panel);
+	if (first) {
+		for (i = 0; i < NMEMB(GkrExec.processes); i++)
+			gkrellm_draw_decal_text(GkrExec.panel, GkrExec.processes[i].widget.decaltext, "", -1);
+		gkrellm_draw_panel_layers(GkrExec.panel);
 		first = 0;
 		return;
 	}
 
-	for(i=0;i<NMEMB(Config.processes); i++) {
-		gkrellm_draw_decal_text(Config.panel, Config.processes[i].decaltext, Config.processes[i].cmdline, -1);
+	for (i = 0; i < NMEMB(GkrExec.processes); i++) {
+		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.processes[i].widget.decaltext, GkrExec.processes[i].cmdline, -1);
 	}
 
-    gkrellm_draw_panel_layers(Config.panel);
+	gkrellm_draw_panel_layers(GkrExec.panel);
 }
 
 
@@ -66,29 +69,29 @@ static void create_plugin(GtkWidget *vbox, gint firstcreate)
 {
 	GkrellmStyle *style;
 	GkrellmMargin *margin;
-    GkrellmTextstyle *ts;
+	GkrellmTextstyle *ts;
 	int i;
 	gint prevy = 0;
 	gint prevh = 0;
 
 	if (firstcreate)
-		Config.panel = gkrellm_panel_new0();
+		GkrExec.panel = gkrellm_panel_new0();
 
-	style = gkrellm_meter_style(Config.style_id);
-	ts = gkrellm_meter_textstyle(Config.style_id);
+	style = gkrellm_meter_style(GkrExec.style_id);
+	ts = gkrellm_meter_textstyle(GkrExec.style_id);
 	margin = gkrellm_get_style_margins(style);
 
-	for(i=0;i<NMEMB(Config.processes); i++) {
-		Config.processes[i].decaltext = gkrellm_create_decal_text(Config.panel, "WWW", ts, style, 0, prevy + prevh + 2, -1);
-		prevy = Config.processes[i].decaltext->y;
-		prevh = Config.processes[i].decaltext->h;
-		gkrellm_decal_on_top_layer(Config.processes[i].decaltext, TRUE);
-		gkrellm_draw_decal_text(Config.panel, Config.processes[i].decaltext, "", -1);
+	for (i = 0; i < NMEMB(GkrExec.processes); i++) {
+		GkrExec.processes[i].widget.decaltext = gkrellm_create_decal_text(GkrExec.panel, "WWW", ts, style, 0, prevy + prevh + 2, -1);
+		prevy = GkrExec.processes[i].widget.decaltext->y;
+		prevh = GkrExec.processes[i].widget.decaltext->h;
+		gkrellm_decal_on_top_layer(GkrExec.processes[i].widget.decaltext, TRUE);
+		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.processes[i].widget.decaltext, "", -1);
 	}
 
-	gkrellm_panel_configure(Config.panel, NULL, style);
-	gkrellm_panel_create(vbox, Config.plugin_mon, Config.panel);
-    gkrellm_draw_panel_layers(Config.panel);
+	gkrellm_panel_configure(GkrExec.panel, NULL, style);
+	gkrellm_panel_create(vbox, GkrExec.plugin_mon, GkrExec.panel);
+	gkrellm_draw_panel_layers(GkrExec.panel);
 }
 
 
@@ -103,7 +106,7 @@ static void create_plugin_tab(GtkWidget * tab_vbox)
 	gtk_notebook_set_tab_pos(GTK_NOTEBOOK(tabs), GTK_POS_TOP);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), tabs, TRUE, TRUE, 0);
 
-	for (i = 0; i < NMEMB(Config.processes); i++) {
+	for (i = 0; i < NMEMB(GkrExec.processes); i++) {
 		GtkWidget *vbox0;
 		GtkWidget *hbox;
 		char tmp[256];
@@ -117,19 +120,19 @@ static void create_plugin_tab(GtkWidget * tab_vbox)
 		gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, TRUE, 5);
 		label = gtk_label_new("Command line:");
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-		Config.processes[i].cmdlineWidget = gtk_entry_new_with_max_length(256);
-		gtk_box_pack_start(GTK_BOX(hbox), Config.processes[i].cmdlineWidget, FALSE, TRUE, 0);
-		gtk_entry_set_text(GTK_ENTRY(Config.processes[i].cmdlineWidget), Config.processes[i].cmdline);
+		GkrExec.processes[i].widget.cmdline = gtk_entry_new_with_max_length(256);
+		gtk_box_pack_start(GTK_BOX(hbox), GkrExec.processes[i].widget.cmdline, FALSE, TRUE, 0);
+		gtk_entry_set_text(GTK_ENTRY(GkrExec.processes[i].widget.cmdline), GkrExec.processes[i].cmdline);
 
 		/* Timeout: */
 		hbox = gtk_hbox_new(FALSE, 10);
 		gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, TRUE, 5);
 		label = gtk_label_new("Timeout:");
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
-		Config.processes[i].timeoutWidget = gtk_entry_new_with_max_length(10);
-		gtk_box_pack_start(GTK_BOX(hbox), Config.processes[i].timeoutWidget, FALSE, TRUE, 0);
-		sprintf(tmp, "%d", Config.processes[i].timeout);
-		gtk_entry_set_text(GTK_ENTRY(Config.processes[i].timeoutWidget), tmp);
+		GkrExec.processes[i].widget.timeout = gtk_entry_new_with_max_length(10);
+		gtk_box_pack_start(GTK_BOX(hbox), GkrExec.processes[i].widget.timeout, FALSE, TRUE, 0);
+		sprintf(tmp, "%d", GkrExec.processes[i].timeout);
+		gtk_entry_set_text(GTK_ENTRY(GkrExec.processes[i].widget.timeout), tmp);
 	}
 
 #if 0
@@ -150,9 +153,9 @@ static void apply_plugin_config(void)
 {
 	int i;
 
-	for (i = 0; i < NMEMB(Config.processes); i++) {
-		snprintf(Config.processes[i].cmdline, sizeof(Config.processes[i].cmdline), "%s", gkrellm_gtk_entry_get_text(&Config.processes[i].cmdlineWidget));
-		Config.processes[i].timeout = atoi(gkrellm_gtk_entry_get_text(&Config.processes[i].timeoutWidget));
+	for (i = 0; i < NMEMB(GkrExec.processes); i++) {
+		snprintf(GkrExec.processes[i].cmdline, sizeof(GkrExec.processes[i].cmdline), "%s", gkrellm_gtk_entry_get_text(&GkrExec.processes[i].widget.cmdline));
+		GkrExec.processes[i].timeout = atoi(gkrellm_gtk_entry_get_text(&GkrExec.processes[i].widget.timeout));
 	}
 
 #if 0
@@ -167,11 +170,11 @@ static void save_plugin_config(FILE *f)
 {
 	int i;
 
-	for (i = 0; i < NMEMB(Config.processes); i++) {
-		if (Config.processes[i].cmdline[0] == 0)
+	for (i = 0; i < NMEMB(GkrExec.processes); i++) {
+		if (GkrExec.processes[i].cmdline[0] == 0)
 			continue;
-		fprintf(f, CONFIG_KEYWORD " cmdline %d %s\n", i, Config.processes[i].cmdline);
-		fprintf(f, CONFIG_KEYWORD " timeout %d %d\n", i, Config.processes[i].timeout);
+		fprintf(f, CONFIG_KEYWORD " cmdline %d %s\n", i, GkrExec.processes[i].cmdline);
+		fprintf(f, CONFIG_KEYWORD " timeout %d %d\n", i, GkrExec.processes[i].timeout);
 	}
 }
 
@@ -185,9 +188,9 @@ static void load_plugin_config(gchar *arg)
 	n = sscanf(arg, "%s %d %[^\n]", config, &i, item);
 	if (n == 3) {
 		if (strcmp(config, "cmdline") == 0)
-			snprintf(Config.processes[i].cmdline, sizeof(Config.processes[i].cmdline), "%s", item);
+			snprintf(GkrExec.processes[i].cmdline, sizeof(GkrExec.processes[i].cmdline), "%s", item);
 		if (strcmp(config, "timeout") == 0)
-			sscanf(item, "%d\n", &Config.processes[i].timeout);
+			sscanf(item, "%d\n", &GkrExec.processes[i].timeout);
 	}
 }
 
@@ -214,8 +217,8 @@ static GkrellmMonitor plugin_mon =
 
 GkrellmMonitor *gkrellm_init_plugin(void)
 {
-	Config.style_id = gkrellm_add_meter_style(&plugin_mon, CONFIG_KEYWORD);
-	Config.plugin_mon = &plugin_mon;
+	GkrExec.style_id = gkrellm_add_meter_style(&plugin_mon, CONFIG_KEYWORD);
+	GkrExec.plugin_mon = &plugin_mon;
 	return &plugin_mon;
 }
 
