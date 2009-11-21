@@ -95,11 +95,29 @@ static void create_plugin(GtkWidget *vbox, gint firstcreate)
 }
 
 
+static GtkWidget* create_option(GtkWidget *parent, const char *name, int size, const char *starttext)
+{
+	GtkWidget *hbox;
+	GtkWidget *label;
+	GtkWidget *rv;
+
+	hbox = gtk_hbox_new(FALSE, 10);
+	gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, TRUE, 5);
+	label = gtk_label_new(name);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	rv = gtk_entry_new_with_max_length(size);
+	gtk_box_pack_start(GTK_BOX(hbox), rv, FALSE, TRUE, 0);
+	gtk_entry_set_text(GTK_ENTRY(rv), starttext);
+
+	return rv;
+}
+
+
 static void create_plugin_tab(GtkWidget * tab_vbox)
 {
 	GtkWidget *tabs;
-	GtkWidget *label;
 	GtkWidget *about;
+	GtkWidget *label;
 	int i;
 
 	tabs = gtk_notebook_new();
@@ -108,31 +126,16 @@ static void create_plugin_tab(GtkWidget * tab_vbox)
 
 	for (i = 0; i < NMEMB(GkrExec.processes); i++) {
 		GtkWidget *vbox0;
-		GtkWidget *hbox;
 		char tmp[256];
 
 		/* Tab: */
 		snprintf(tmp, sizeof tmp, "Process %d", i + 1);
 		vbox0 = gkrellm_gtk_framed_notebook_page(tabs, tmp);
 
-		/* Command line: */
-		hbox = gtk_hbox_new(FALSE, 10);
-		gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, TRUE, 5);
-		label = gtk_label_new("Command line:");
-		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-		GkrExec.processes[i].widget.cmdline = gtk_entry_new_with_max_length(256);
-		gtk_box_pack_start(GTK_BOX(hbox), GkrExec.processes[i].widget.cmdline, FALSE, TRUE, 0);
-		gtk_entry_set_text(GTK_ENTRY(GkrExec.processes[i].widget.cmdline), GkrExec.processes[i].cmdline);
+		GkrExec.processes[i].widget.cmdline = create_option(vbox0, "Command line:", 256, GkrExec.processes[i].cmdline);
 
-		/* Timeout: */
-		hbox = gtk_hbox_new(FALSE, 10);
-		gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, TRUE, 5);
-		label = gtk_label_new("Timeout:");
-		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, TRUE, 0);
-		GkrExec.processes[i].widget.timeout = gtk_entry_new_with_max_length(10);
-		gtk_box_pack_start(GTK_BOX(hbox), GkrExec.processes[i].widget.timeout, FALSE, TRUE, 0);
 		sprintf(tmp, "%d", GkrExec.processes[i].timeout);
-		gtk_entry_set_text(GTK_ENTRY(GkrExec.processes[i].widget.timeout), tmp);
+		GkrExec.processes[i].widget.timeout = create_option(vbox0, "Timeout:", 10, tmp);
 	}
 
 #if 0
