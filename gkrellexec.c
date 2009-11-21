@@ -92,6 +92,14 @@ static void create_plugin(GtkWidget *vbox, gint firstcreate)
 
 /****************************************************************************/
 
+/**
+ * \brief  Create an option in config screen.
+ * \param  parent Parent vbox.
+ * \param  name Option name.
+ * \param  size Max length of user text.
+ * \param  starttext Initial text.
+ * \return The option widget.
+ */
 static GtkWidget* create_option(GtkWidget *parent, const char *name, int size, const char *starttext)
 {
 	GtkWidget *hbox;
