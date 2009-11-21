@@ -47,18 +47,10 @@ GkrExec;
 
 static void update_plugin(void)
 {
-	static int first = 1;
 	int i;
 
-	if (first) {
-		for (i = 0; i < NMEMB(GkrExec.processes); i++)
-			gkrellm_draw_decal_text(GkrExec.panel, GkrExec.processes[i].widget.decaltext, "", -1);
-		gkrellm_draw_panel_layers(GkrExec.panel);
-		first = 0;
-		return;
-	}
-
 	for (i = 0; i < NMEMB(GkrExec.processes); i++) {
+		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.processes[i].widget.decaltext, "", -1);
 		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.processes[i].widget.decaltext, GkrExec.processes[i].cmdline, -1);
 	}
 
@@ -84,11 +76,10 @@ static void create_plugin(GtkWidget *vbox, gint firstcreate)
 	margin = gkrellm_get_style_margins(style);
 
 	for (i = 0; i < NMEMB(GkrExec.processes); i++) {
-		GkrExec.processes[i].widget.decaltext = gkrellm_create_decal_text(GkrExec.panel, "WWW", ts, style, 0, prevy + prevh + 2, -1);
+		GkrExec.processes[i].widget.decaltext = gkrellm_create_decal_text(GkrExec.panel, "Ayl0", ts, style, -1, prevy + prevh + 2, -1);
 		prevy = GkrExec.processes[i].widget.decaltext->y;
 		prevh = GkrExec.processes[i].widget.decaltext->h;
 		gkrellm_decal_on_top_layer(GkrExec.processes[i].widget.decaltext, TRUE);
-		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.processes[i].widget.decaltext, "", -1);
 	}
 
 	gkrellm_panel_configure(GkrExec.panel, NULL, style);
