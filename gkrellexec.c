@@ -125,6 +125,7 @@ static void update_plugin(void)
 				if (upt - GkrExec.proc[i].sts.uptstart > GkrExec.proc[i].cfg.timeout) {
 					/* Timeout */
 					kill(GkrExec.proc[i].sts.pid, SIGKILL);
+					waitpid(GkrExec.proc[i].sts.pid, &status, 0);
 					GkrExec.proc[i].sts.pid = 0;
 					GkrExec.proc[i].sts.last = PROC_TIMEOUT;
 				}
