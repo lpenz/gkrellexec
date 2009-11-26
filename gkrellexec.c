@@ -64,6 +64,8 @@ static struct
 	GkrellmPanel *panel;
 	gint style_id;
 	GkrellmMonitor *plugin_mon;
+	GkrellmTextstyle *textstyle;
+	GkrellmStyle *style;
 }
 GkrExec;
 
@@ -179,9 +181,7 @@ static void update_plugin(void)
 
 static void create_plugin(GtkWidget *vbox, gint firstcreate)
 {
-	GkrellmStyle *style;
 	GkrellmMargin *margin;
-	GkrellmTextstyle *ts;
 	int i;
 	gint prevy = 0;
 	gint prevh = 0;
@@ -189,18 +189,18 @@ static void create_plugin(GtkWidget *vbox, gint firstcreate)
 	if (firstcreate)
 		GkrExec.panel = gkrellm_panel_new0();
 
-	style = gkrellm_meter_style(GkrExec.style_id);
-	ts = gkrellm_meter_textstyle(GkrExec.style_id);
-	margin = gkrellm_get_style_margins(style);
+	GkrExec.style = gkrellm_meter_style(GkrExec.style_id);
+	GkrExec.textstyle = gkrellm_meter_textstyle(GkrExec.style_id);
+	margin = gkrellm_get_style_margins(GkrExec.style);
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
-		GkrExec.proc[i].widget.decaltext = gkrellm_create_decal_text(GkrExec.panel, "Ayl0", ts, style, -1, prevy + prevh + 2, -1);
+		GkrExec.proc[i].widget.decaltext = gkrellm_create_decal_text(GkrExec.panel, "Ayl0", GkrExec.textstyle, GkrExec.style, -1, prevy + prevh + 2, -1);
 		prevy = GkrExec.proc[i].widget.decaltext->y;
 		prevh = GkrExec.proc[i].widget.decaltext->h;
 		gkrellm_decal_on_top_layer(GkrExec.proc[i].widget.decaltext, TRUE);
 	}
 
-	gkrellm_panel_configure(GkrExec.panel, NULL, style);
+	gkrellm_panel_configure(GkrExec.panel, NULL, GkrExec.style);
 	gkrellm_panel_create(vbox, GkrExec.plugin_mon, GkrExec.panel);
 	gkrellm_draw_panel_layers(GkrExec.panel);
 }
