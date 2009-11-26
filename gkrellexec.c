@@ -164,7 +164,7 @@ static void update_plugin(void)
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
 		char last = '?';
-		char tmp[300];
+		char tmp[60];
 
 		if (!GkrExec.proc[i].cfg.name[0])
 			continue;
