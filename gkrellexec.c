@@ -31,6 +31,8 @@ static struct
 		struct {
 			char cmdline[256];
 			int timeout;
+			int sleepok;
+			int sleeperr;
 		}
 		cfg;
 		struct {
@@ -44,11 +46,14 @@ static struct
 			int timedout;
 			int waitstatus;
 			long uptstart;
+			long uptend;
 		}
 		sts;
 		struct {
 			GtkWidget *cmdline;
 			GtkWidget *timeout;
+			GtkWidget *sleepok;
+			GtkWidget *sleeperr;
 			GkrellmDecal *decaltext;
 		}
 		widget;
@@ -94,7 +99,10 @@ static void update_plugin(void)
 			continue;
 
 		/* Not running, run: */
-		if (GkrExec.proc[i].sts.pid == 0) {
+		if (GkrExec.proc[i].sts.pid == 0 && (
+				(GkrExec.proc[i].sts.last == PROC_OK && uptime() - GkrExec.proc[i].sts.uptend > GkrExec.proc[i].cfg.sleepok)
+				|| (GkrExec.proc[i].sts.last == PROC_ERR && uptime() - GkrExec.proc[i].sts.uptend > GkrExec.proc[i].cfg.sleeperr)
+				)) {
 			GkrExec.proc[i].sts.pid = fork();
 			switch(GkrExec.proc[i].sts.pid) {
 				case -1:
@@ -113,12 +121,17 @@ static void update_plugin(void)
 			continue;
 		}
 
+		/* Not supposed to run yet. */
+		if (GkrExec.proc[i].sts.pid == 0)
+			continue;
+
 		/* Running, check status: */
 		switch(waitpid(GkrExec.proc[i].sts.pid, &status, WNOHANG)) {
 			case -1:
 				/* Error */
 				GkrExec.proc[i].sts.pid = 0;
 				GkrExec.proc[i].sts.last = PROC_ERR;
+				GkrExec.proc[i].sts.uptend = uptime();
 				break;
 			case 0:
 				/* No change, timeout? */
@@ -128,6 +141,7 @@ static void update_plugin(void)
 					waitpid(GkrExec.proc[i].sts.pid, &status, 0);
 					GkrExec.proc[i].sts.pid = 0;
 					GkrExec.proc[i].sts.last = PROC_TIMEOUT;
+					GkrExec.proc[i].sts.uptend = uptime();
 				}
 				break;
 			default:
@@ -138,6 +152,7 @@ static void update_plugin(void)
 					GkrExec.proc[i].sts.last = PROC_ERR;
 				GkrExec.proc[i].sts.waitstatus = status;
 				GkrExec.proc[i].sts.pid = 0;
+				GkrExec.proc[i].sts.uptend = uptime();
 				break;
 		}
 	}
@@ -239,6 +254,12 @@ static void create_plugin_tab(GtkWidget * tab_vbox)
 
 		sprintf(tmp, "%d", GkrExec.proc[i].cfg.timeout);
 		GkrExec.proc[i].widget.timeout = create_option(vbox0, "Timeout:", 10, tmp);
+
+		sprintf(tmp, "%d", GkrExec.proc[i].cfg.sleepok);
+		GkrExec.proc[i].widget.sleepok = create_option(vbox0, "Sleep after success:", 10, tmp);
+
+		sprintf(tmp, "%d", GkrExec.proc[i].cfg.sleeperr);
+		GkrExec.proc[i].widget.sleeperr = create_option(vbox0, "Sleep after error:", 10, tmp);
 	}
 
 #if 0
@@ -262,6 +283,8 @@ static void apply_plugin_config(void)
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
 		snprintf(GkrExec.proc[i].cfg.cmdline, sizeof(GkrExec.proc[i].cfg.cmdline), "%s", gkrellm_gtk_entry_get_text(&GkrExec.proc[i].widget.cmdline));
 		GkrExec.proc[i].cfg.timeout = atoi(gkrellm_gtk_entry_get_text(&GkrExec.proc[i].widget.timeout));
+		GkrExec.proc[i].cfg.sleepok = atoi(gkrellm_gtk_entry_get_text(&GkrExec.proc[i].widget.sleepok));
+		GkrExec.proc[i].cfg.sleeperr = atoi(gkrellm_gtk_entry_get_text(&GkrExec.proc[i].widget.sleeperr));
 	}
 
 #if 0
@@ -282,6 +305,8 @@ static void save_plugin_config(FILE *f)
 			continue;
 		fprintf(f, CONFIG_KEYWORD " cmdline %d %s\n", i, GkrExec.proc[i].cfg.cmdline);
 		fprintf(f, CONFIG_KEYWORD " timeout %d %d\n", i, GkrExec.proc[i].cfg.timeout);
+		fprintf(f, CONFIG_KEYWORD " sleepok %d %d\n", i, GkrExec.proc[i].cfg.sleepok);
+		fprintf(f, CONFIG_KEYWORD " sleeperr %d %d\n", i, GkrExec.proc[i].cfg.sleeperr);
 	}
 }
 
@@ -298,6 +323,10 @@ static void load_plugin_config(gchar *arg)
 			snprintf(GkrExec.proc[i].cfg.cmdline, sizeof(GkrExec.proc[i].cfg.cmdline), "%s", item);
 		if (strcmp(config, "timeout") == 0)
 			sscanf(item, "%d\n", &GkrExec.proc[i].cfg.timeout);
+		if (strcmp(config, "sleepok") == 0)
+			sscanf(item, "%d\n", &GkrExec.proc[i].cfg.sleepok);
+		if (strcmp(config, "sleeperr") == 0)
+			sscanf(item, "%d\n", &GkrExec.proc[i].cfg.sleeperr);
 	}
 }
 
