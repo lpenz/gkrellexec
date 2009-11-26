@@ -29,6 +29,7 @@ static struct
 {
 	struct {
 		struct {
+			char name[256];
 			char cmdline[256];
 			int timeout;
 			int sleepok;
@@ -50,6 +51,7 @@ static struct
 		}
 		sts;
 		struct {
+			GtkWidget *name;
 			GtkWidget *cmdline;
 			GtkWidget *timeout;
 			GtkWidget *sleepok;
@@ -95,7 +97,7 @@ static void update_plugin(void)
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
 		/* Disabled */
-		if (! GkrExec.proc[i].cfg.cmdline[0])
+		if (! GkrExec.proc[i].cfg.name[0])
 			continue;
 
 		/* Not running, run: */
@@ -166,7 +168,7 @@ static void update_plugin(void)
 			case PROC_ERR:     last = 'E'; break;
 			case PROC_TIMEOUT: last = 'T'; break;
 		}
-		snprintf(tmp, sizeof(tmp), "%c %s", last, GkrExec.proc[i].cfg.cmdline);
+		snprintf(tmp, sizeof(tmp), "%c %s", last, GkrExec.proc[i].cfg.name);
 		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.proc[i].widget.decaltext, tmp, -1);
 	}
 
@@ -250,6 +252,8 @@ static void create_plugin_tab(GtkWidget * tab_vbox)
 		snprintf(tmp, sizeof tmp, "Process %d", i + 1);
 		vbox0 = gkrellm_gtk_framed_notebook_page(tabs, tmp);
 
+		GkrExec.proc[i].widget.name = create_option(vbox0, "Name:", 256, GkrExec.proc[i].cfg.name);
+
 		GkrExec.proc[i].widget.cmdline = create_option(vbox0, "Command line:", 256, GkrExec.proc[i].cfg.cmdline);
 
 		sprintf(tmp, "%d", GkrExec.proc[i].cfg.timeout);
@@ -281,6 +285,7 @@ static void apply_plugin_config(void)
 	int i;
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
+		snprintf(GkrExec.proc[i].cfg.name, sizeof(GkrExec.proc[i].cfg.name), "%s", gkrellm_gtk_entry_get_text(&GkrExec.proc[i].widget.name));
 		snprintf(GkrExec.proc[i].cfg.cmdline, sizeof(GkrExec.proc[i].cfg.cmdline), "%s", gkrellm_gtk_entry_get_text(&GkrExec.proc[i].widget.cmdline));
 		GkrExec.proc[i].cfg.timeout = atoi(gkrellm_gtk_entry_get_text(&GkrExec.proc[i].widget.timeout));
 		GkrExec.proc[i].cfg.sleepok = atoi(gkrellm_gtk_entry_get_text(&GkrExec.proc[i].widget.sleepok));
@@ -301,8 +306,9 @@ static void save_plugin_config(FILE *f)
 	int i;
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
-		if (GkrExec.proc[i].cfg.cmdline[0] == 0)
+		if (GkrExec.proc[i].cfg.name[0] == 0)
 			continue;
+		fprintf(f, CONFIG_KEYWORD " name %d %s\n", i, GkrExec.proc[i].cfg.name);
 		fprintf(f, CONFIG_KEYWORD " cmdline %d %s\n", i, GkrExec.proc[i].cfg.cmdline);
 		fprintf(f, CONFIG_KEYWORD " timeout %d %d\n", i, GkrExec.proc[i].cfg.timeout);
 		fprintf(f, CONFIG_KEYWORD " sleepok %d %d\n", i, GkrExec.proc[i].cfg.sleepok);
@@ -319,6 +325,8 @@ static void load_plugin_config(gchar *arg)
 
 	n = sscanf(arg, "%s %d %[^\n]", config, &i, item);
 	if (n == 3) {
+		if (strcmp(config, "name") == 0)
+			snprintf(GkrExec.proc[i].cfg.name, sizeof(GkrExec.proc[i].cfg.name), "%s", item);
 		if (strcmp(config, "cmdline") == 0)
 			snprintf(GkrExec.proc[i].cfg.cmdline, sizeof(GkrExec.proc[i].cfg.cmdline), "%s", item);
 		if (strcmp(config, "timeout") == 0)
