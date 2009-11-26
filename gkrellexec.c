@@ -61,6 +61,7 @@ static struct
 		widget;
 	}
 	proc[GKRELLEXEC_PROCESSES_MAXNUM];
+	GtkWidget *vbox;
 	GkrellmPanel *panel;
 	gint style_id;
 	GkrellmMonitor *plugin_mon;
@@ -164,6 +165,10 @@ static void update_plugin(void)
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
 		char last = '?';
 		char tmp[300];
+
+		if (!GkrExec.proc[i].cfg.name[0])
+			continue;
+
 		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.proc[i].widget.decaltext, "", -1);
 		switch(GkrExec.proc[i].sts.last) {
 			case PROC_OK:      last = 'O'; break;
@@ -189,11 +194,14 @@ static void create_plugin(GtkWidget *vbox, gint firstcreate)
 	if (firstcreate)
 		GkrExec.panel = gkrellm_panel_new0();
 
+	GkrExec.vbox = vbox;
 	GkrExec.style = gkrellm_meter_style(GkrExec.style_id);
 	GkrExec.textstyle = gkrellm_meter_textstyle(GkrExec.style_id);
 	margin = gkrellm_get_style_margins(GkrExec.style);
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
+		if (!GkrExec.proc[i].cfg.name[0])
+			continue;
 		GkrExec.proc[i].widget.decaltext = gkrellm_create_decal_text(GkrExec.panel, "Ayl0", GkrExec.textstyle, GkrExec.style, -1, prevy + prevh + 2, -1);
 		prevy = GkrExec.proc[i].widget.decaltext->y;
 		prevh = GkrExec.proc[i].widget.decaltext->h;
@@ -292,11 +300,8 @@ static void apply_plugin_config(void)
 		GkrExec.proc[i].cfg.sleeperr = atoi(gkrellm_gtk_entry_get_text(&GkrExec.proc[i].widget.sleeperr));
 	}
 
-#if 0
-	/* Re-layout pannel */
-	gkrellm_panel_destroy(amiconn_panel);
-	CreatePlugin(amiconn_vbox, TRUE);
-#endif
+	gkrellm_panel_destroy(GkrExec.panel);
+	create_plugin(GkrExec.vbox, TRUE);
 }
 
 /****************************************************************************/
