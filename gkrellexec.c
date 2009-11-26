@@ -13,7 +13,7 @@
 
 #define CONFIG_KEYWORD "gkrellexec"
 #define PLUGIN_PLACEMENT	MON_MAIL
-#define GKRELLEXEC_PROCESSES_MAXNUM 3
+#define GKRELLEXEC_PROCESSES_MAXNUM 10
 
 #define NMEMB(x) ((sizeof(x))/(sizeof(*x)))
 
