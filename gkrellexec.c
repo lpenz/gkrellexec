@@ -142,7 +142,7 @@ static void update_plugin(void)
 	}
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
-		char last;
+		char last = '?';
 		char tmp[300];
 		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.proc[i].widget.decaltext, "", -1);
 		switch(GkrExec.proc[i].sts.last) {
