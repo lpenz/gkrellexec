@@ -200,6 +200,7 @@ static void create_plugin(GtkWidget *vbox, gint firstcreate)
 	margin = gkrellm_get_style_margins(GkrExec.style);
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
+		memset(&GkrExec.proc[i].sts, 0, sizeof(GkrExec.proc[i].sts));
 		if (!GkrExec.proc[i].cfg.name[0])
 			continue;
 		GkrExec.proc[i].widget.decaltext = gkrellm_create_decal_text(GkrExec.panel, "Ayl0", GkrExec.textstyle, GkrExec.style, -1, prevy + prevh + 2, -1);
