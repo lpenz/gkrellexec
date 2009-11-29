@@ -2,7 +2,7 @@
 GTK2_INCLUDE = `pkg-config gtk+-2.0 --cflags`
 GTK2_LIB = `pkg-config gtk+-2.0 --libs`
 
-CPPFLAGS = -Wall -DGKRELLM2
+CPPFLAGS = -Wall -Werror
 CFLAGS = -O2 -fPIC $(GTK2_INCLUDE)
 LDLIBS = $(GTK2_LIB)
 
