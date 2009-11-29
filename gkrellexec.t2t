@@ -11,7 +11,7 @@ Up to 10 shell commands can be specified, each with a name, timeout and
 different times to sleep after a success or a failure.
 
 gkellexec displays a panel in gkrellm, with one line per process, showing its
-last exit status (//T// for timeout, //O// for ok, //E// for error) and its
+last exit status (**T** for timeout, **O** for ok, **E** for error) and its
 name.
 
 
