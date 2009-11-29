@@ -17,5 +17,11 @@ h1. Configuration
 
 Enable it in gkrellm's plugin configuration.
 
-On the plugins's configuration screen, there is a tab for each process with the configurable options. The process is disabled if it has no name. The shell command is run with _/bin/sh -c **command**_, so that shell syntax is fully available.
+On the plugins's configuration screen, there is a tab for each process with the configurable options. The process is disabled if it has no name. The shell command is run with _/bin/sh -c "**command**"_, so that shell syntax is fully available.
+
+h1. TODO
+
+* Improve configuration screen layout: align, enlarge command line text box.
+* Change status indicator from a char to a pixmap - use network pixmaps?
+* Allow configurable number of processes.
 
