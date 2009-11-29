@@ -1,2 +1,5 @@
-*.o
-*.so
+gkrellexec.o
+gkrellexec.so
+gkrellexec.os
+libgkrellexec.so
+.sconsign.dblite
