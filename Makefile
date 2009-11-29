@@ -9,6 +9,10 @@ CPPFLAGS = -Wall -Werror
 CFLAGS = -O2 -fPIC $(GTK2_INCLUDE)
 LDLIBS = $(GTK2_LIB)
 
+all: gkrellexec.so
+
+.PHONY: all install clean
+
 gkrellexec.so: gkrellexec.o
 
 gkrellexec.o: gkrellexec.c
