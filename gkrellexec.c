@@ -12,6 +12,7 @@
 #include <gkrellm2/gkrellm.h>
 
 #define CONFIG_KEYWORD "gkrellexec"
+#define GKRELLEXEC_VERSION "0"
 #define PLUGIN_PLACEMENT	MON_MAIL
 #define GKRELLEXEC_PROCESSES_MAXNUM 10
 
@@ -19,10 +20,31 @@
 
 
 static gchar AboutText[] =
-"GKrellM Exec version 0\n\n\n"
+"GKrellM Exec version " GKRELLEXEC_VERSION "\n\n\n"
 "Copyright (C) 2009 by Leandro Penz\n"
 "lpenz@terra.com.br\n"
+"http://github.com/lpenz/gkrellexec\n"
 "Released under the GPL\n";
+
+
+static gchar *HelpText[] = {
+"<h>" CONFIG_KEYWORD "\n\n",
+"gkellexec displays one line per process, with its name and exit status\n\n",
+"<b>Exit codes\n",
+"- O: ok\n",
+"- E: error\n",
+"- T: timeout\n\n",
+"<b>Configuration options\n",
+"- Name: name of process, displayed in panel; clear it to disable process.\n",
+"- Command line: executed with /bin/sh -c <cmdline>; its exit status is shown in panel.\n",
+"- Timeout: after the specified amount of seconds, the process is killed and T shown.\n",
+"- Sleep after success: amount of seconds to sleep after an Ok exit code.\n",
+"- Sleep after failure: amount of seconds to sleep after a failure.\n\n",
+"<b>Examples\n",
+"Use \"ping -c1 <host>\" to check if a host is alive.\n"
+"Use ifconfig with grep to check if an interface is up.\n"
+"Use grep with /proc files to check many things.\n"
+};
 
 
 static struct
@@ -245,8 +267,9 @@ static GtkWidget* create_option(GtkWidget *parent, const char *name, int size, c
 static void create_plugin_tab(GtkWidget * tab_vbox)
 {
 	GtkWidget *tabs;
-	GtkWidget *about;
+	GtkWidget *text;
 	GtkWidget *label;
+	GtkWidget *vbox;
 	int i;
 
 	tabs = gtk_notebook_new();
@@ -275,17 +298,16 @@ static void create_plugin_tab(GtkWidget * tab_vbox)
 		GkrExec.proc[i].widget.sleeperr = create_option(vbox0, "Sleep after error:", 10, tmp);
 	}
 
-#if 0
-	// Info tab  ***
-	InfoLabel = gtk_label_new(amiconn_InfoText);
-	Label = gtk_label_new("Info");
-	gtk_notebook_append_page(GTK_NOTEBOOK(Tabs), InfoLabel, Label);
-#endif
+	/* Help */
+	vbox = gkrellm_gtk_framed_notebook_page(tabs, "Help");
+	text = gkrellm_gtk_scrolled_text_view(vbox, NULL, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	for (i = 0; i < sizeof(HelpText)/sizeof(gchar *); ++i)
+		gkrellm_gtk_text_view_append(text, HelpText[i]);
 
 	/* About */
 	label = gtk_label_new("About");
-	about = gtk_label_new(AboutText);
-	gtk_notebook_append_page(GTK_NOTEBOOK(tabs), about, label);
+	text = gtk_label_new(AboutText);
+	gtk_notebook_append_page(GTK_NOTEBOOK(tabs), text, label);
 }
 
 
