@@ -46,6 +46,13 @@ static gchar *HelpText[] = {
 "Use grep with /proc files to check many things.\n"
 };
 
+struct proc_status { char repr; };
+struct proc_status ProcStatusUnknown = { '?' };
+struct proc_status ProcStatusOk      = { 'O' };
+struct proc_status ProcStatusError   = { 'E' };
+struct proc_status ProcStatusTimeout = { 'T' };
+
+typedef struct proc_status* proc_status_t;
 
 static struct
 {
@@ -60,12 +67,7 @@ static struct
 		cfg;
 		struct {
 			pid_t pid;
-			enum {
-				PROC_OK,
-				PROC_ERR,
-				PROC_TIMEOUT
-			}
-			last;
+			proc_status_t last;
 			int timedout;
 			int waitstatus;
 			long uptstart;
@@ -127,15 +129,16 @@ static void update_plugin(void)
 
 		/* Not running, run: */
 		if (GkrExec.proc[i].sts.pid == 0 && (
-				(GkrExec.proc[i].sts.last == PROC_OK && uptime() - GkrExec.proc[i].sts.uptend > GkrExec.proc[i].cfg.sleepok)
-				|| (GkrExec.proc[i].sts.last == PROC_ERR && uptime() - GkrExec.proc[i].sts.uptend > GkrExec.proc[i].cfg.sleeperr)
+				GkrExec.proc[i].sts.last == &ProcStatusUnknown
+				|| (GkrExec.proc[i].sts.last == &ProcStatusOk && uptime() - GkrExec.proc[i].sts.uptend > GkrExec.proc[i].cfg.sleepok)
+				|| (GkrExec.proc[i].sts.last == &ProcStatusError && uptime() - GkrExec.proc[i].sts.uptend > GkrExec.proc[i].cfg.sleeperr)
 				)) {
 			GkrExec.proc[i].sts.pid = fork();
 			switch(GkrExec.proc[i].sts.pid) {
 				case -1:
 					/* Error */
 					GkrExec.proc[i].sts.pid = 0;
-					GkrExec.proc[i].sts.last = PROC_ERR;
+					GkrExec.proc[i].sts.last = &ProcStatusError;
 					break;
 				case 0:
 					/* Child */
@@ -157,7 +160,7 @@ static void update_plugin(void)
 			case -1:
 				/* Error */
 				GkrExec.proc[i].sts.pid = 0;
-				GkrExec.proc[i].sts.last = PROC_ERR;
+				GkrExec.proc[i].sts.last = &ProcStatusError;
 				GkrExec.proc[i].sts.uptend = uptime();
 				break;
 			case 0:
@@ -167,16 +170,16 @@ static void update_plugin(void)
 					kill(GkrExec.proc[i].sts.pid, SIGKILL);
 					waitpid(GkrExec.proc[i].sts.pid, &status, 0);
 					GkrExec.proc[i].sts.pid = 0;
-					GkrExec.proc[i].sts.last = PROC_TIMEOUT;
+					GkrExec.proc[i].sts.last = &ProcStatusTimeout;
 					GkrExec.proc[i].sts.uptend = uptime();
 				}
 				break;
 			default:
 				/* Exited */
 				if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-					GkrExec.proc[i].sts.last = PROC_OK;
+					GkrExec.proc[i].sts.last = &ProcStatusOk;
 				else
-					GkrExec.proc[i].sts.last = PROC_ERR;
+					GkrExec.proc[i].sts.last = &ProcStatusError;
 				GkrExec.proc[i].sts.waitstatus = status;
 				GkrExec.proc[i].sts.pid = 0;
 				GkrExec.proc[i].sts.uptend = uptime();
@@ -185,19 +188,13 @@ static void update_plugin(void)
 	}
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
-		char last = '?';
 		char tmp[60];
 
 		if (!GkrExec.proc[i].cfg.name[0])
 			continue;
 
 		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.proc[i].widget.decaltext, "", -1);
-		switch(GkrExec.proc[i].sts.last) {
-			case PROC_OK:      last = 'O'; break;
-			case PROC_ERR:     last = 'E'; break;
-			case PROC_TIMEOUT: last = 'T'; break;
-		}
-		snprintf(tmp, sizeof(tmp), "%c %s", last, GkrExec.proc[i].cfg.name);
+		snprintf(tmp, sizeof(tmp), "%c %s", GkrExec.proc[i].sts.last->repr, GkrExec.proc[i].cfg.name);
 		gkrellm_draw_decal_text(GkrExec.panel, GkrExec.proc[i].widget.decaltext, tmp, -1);
 	}
 
@@ -229,6 +226,7 @@ static void create_plugin(GtkWidget *vbox, gint firstcreate)
 		prevy = GkrExec.proc[i].widget.decaltext->y;
 		prevh = GkrExec.proc[i].widget.decaltext->h;
 		gkrellm_decal_on_top_layer(GkrExec.proc[i].widget.decaltext, TRUE);
+		GkrExec.proc[i].sts.last = &ProcStatusUnknown;
 	}
 
 	gkrellm_panel_configure(GkrExec.panel, NULL, GkrExec.style);
