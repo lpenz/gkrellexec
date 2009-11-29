@@ -26,3 +26,7 @@ clean:
 
 %.so: %.o
 	$(CC) -shared $(LDFLAGS) -o $@ $^ $(LOADLIBES) $(LDLIBS)
+
+README.textile: gkrellexec.t2t
+	txt2tags -t textile -i $< -o $@
+
