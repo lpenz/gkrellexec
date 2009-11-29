@@ -3,3 +3,6 @@ gkrellexec.so
 gkrellexec.os
 libgkrellexec.so
 .sconsign.dblite
+.find.txt
+ID
+tags
