@@ -129,10 +129,15 @@ static void update_plugin(void)
 
 		/* Not running, run: */
 		if (GkrExec.proc[i].sts.pid == 0 && (
-				GkrExec.proc[i].sts.last == &ProcStatusUnknown
-				|| (GkrExec.proc[i].sts.last == &ProcStatusOk && uptime() - GkrExec.proc[i].sts.uptend > GkrExec.proc[i].cfg.sleepok)
-				|| (GkrExec.proc[i].sts.last == &ProcStatusError && uptime() - GkrExec.proc[i].sts.uptend > GkrExec.proc[i].cfg.sleeperr)
-				)) {
+					/* Unknown */
+					GkrExec.proc[i].sts.last == &ProcStatusUnknown
+					/* Ok and sleepok gone */
+					|| (GkrExec.proc[i].sts.last == &ProcStatusOk
+						&& uptime() - GkrExec.proc[i].sts.uptend > GkrExec.proc[i].cfg.sleepok)
+					/* Error or timeout and sleeperr gone */
+					|| ((GkrExec.proc[i].sts.last == &ProcStatusError || GkrExec.proc[i].sts.last == &ProcStatusTimeout)
+						&& uptime() - GkrExec.proc[i].sts.uptend > GkrExec.proc[i].cfg.sleeperr)
+					)) {
 			GkrExec.proc[i].sts.pid = fork();
 			switch(GkrExec.proc[i].sts.pid) {
 				case -1:
