@@ -9,7 +9,7 @@ CPPFLAGS = -Wall -Werror
 CFLAGS = -O2 -fPIC $(GTK2_INCLUDE)
 LDLIBS = $(GTK2_LIB)
 
-all: gkrellexec.so
+all: gkrellexec.so README.html
 
 .PHONY: all install clean
 
@@ -29,4 +29,7 @@ clean:
 
 README.textile: gkrellexec.t2t
 	txt2tags -t textile -H -i $< -o $@
+
+README.html: gkrellexec.t2t
+	txt2tags -t html -i $< -o $@
 

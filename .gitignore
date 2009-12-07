@@ -2,6 +2,7 @@ gkrellexec.o
 gkrellexec.so
 gkrellexec.os
 libgkrellexec.so
+README.html
 .sconsign.dblite
 .find.txt
 ID

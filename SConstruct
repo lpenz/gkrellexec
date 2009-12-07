@@ -10,4 +10,5 @@ env.SharedLibrary('gkrellexec.c', CFLAGS = ['-O2', '-Wall', '-Werror', gtk2inclu
 env.Command('gkrellexec.so', 'libgkrellexec.so', 'cp $SOURCE $TARGET')
 
 env.Command('README.textile', 'gkrellexec.t2t', 'txt2tags -t textile -H -i $SOURCE -o $TARGET')
+env.Command('README.html', 'gkrellexec.t2t', 'txt2tags -t html -i $SOURCE -o $TARGET')
 
