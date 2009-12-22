@@ -4,6 +4,8 @@ Priority: extra
 Maintainer: Leandro Lisboa Penz <lpenz@terra.com.br>
 Build-Depends: debhelper (>= 7.0.50), make (>= 3.81-5), libc6-dev (>= 2.7-18), gcc (>= 4:4.3.2-2), gkrellm (>= 2.3), coreutils (>= 6.10-6), txt2tags (>=1), pkg-config
 Standards-Version: 3.8.3
+Vcs-Browser: http://github.com/lpenz/gkrellexec
+Vcs-Git: git://github.com/lpenz/gkrellexec.git
 Homepage: http://github.com/lpenz/gkrellexec
 
 Package: gkrellexec
