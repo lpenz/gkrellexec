@@ -7,3 +7,7 @@ README.html
 .find.txt
 ID
 tags
+/debian/files
+/debian/gkrellexec.debhelper.log
+/debian/gkrellexec.substvars
+/debian/gkrellexec/
