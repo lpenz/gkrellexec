@@ -1,3 +1,9 @@
+gkrellexec (1.0.1) unstable; urgency=low
+
+  * Fixed instalation path.
+
+ -- Leandro Lisboa Penz <lpenz@terra.com.br>  Sun, 27 Dec 2009 15:39:22 -0200
+
 gkrellexec (1.0) unstable; urgency=low
 
   * Initial Release.
