@@ -1,6 +1,6 @@
 
-DESTDIR = /usr/local
-PLUGINDIR = $(DESTDIR)/lib/gkrellm2/plugins
+PREFIX=/usr/local
+PLUGINDIR = $(PREFIX)/lib/gkrellm2/plugins
 
 GTK2_INCLUDE = `pkg-config gtk+-2.0 --cflags`
 GTK2_LIB = `pkg-config gtk+-2.0 --libs`
