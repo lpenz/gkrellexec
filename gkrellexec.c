@@ -11,8 +11,11 @@
 
 #include <gkrellm2/gkrellm.h>
 
-#define CONFIG_KEYWORD "gkrellexec"
-#define GKRELLEXEC_VERSION "0"
+#define PROGRAM_NAME "gkrellexec"
+#define PROGRAM_VERSION "1.0.2"
+
+#define CONFIG_KEYWORD PROGRAM_NAME
+#define GKRELLEXEC_VERSION PROGRAM_VERSION
 #define PLUGIN_PLACEMENT	MON_MAIL
 #define GKRELLEXEC_PROCESSES_MAXNUM 10
 
