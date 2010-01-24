@@ -28,7 +28,8 @@ clean:
 	$(CC) -shared $(LDFLAGS) -o $@ $^ $(LOADLIBES) $(LDLIBS)
 
 README.textile: gkrellexec.t2t
-	txt2tags -t textile -H -i $< -o $@
+	txt2tags -t html -H -i $^ -o $@
+	sed -i -e 's@<B>@**@g' -e 's@</B>@**@g' $@
 
 README.html: gkrellexec.t2t
 	txt2tags -t html -i $< -o $@
