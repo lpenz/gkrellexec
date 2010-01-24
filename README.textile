@@ -1,27 +1,40 @@
-
-h1. Introduction
-
-**gkrellexec** is a plugin for gkrellm that displays the return status of arbitrary shell commands.
-
-Up to 10 shell commands can be specified, each with a name, timeout and different times to sleep after a success or a failure.
-
-gkellexec displays a panel in gkrellm, with one line per process, showing its last exit status (**T** for timeout, **O** for ok, **E** for error) and its name.
-
-h1. Installation
-
-To build it, just run _make_. gkrellm's header files must be installed.
-
-To install, you can either run _make install_ so that it is copied to the default @/usr/lib/gkrellm2@; or you can copy gkrellexec.so to @$HOME/.gkrellm2/plugins@.
-
-h1. Configuration
-
+<H1>Introduction</H1>
+<P>
+**gkrellexec** is a plugin for gkrellm that displays the return status of
+arbitrary shell commands.
+</P>
+<P>
+Up to 10 shell commands can be specified, each with a name, timeout and
+different times to sleep after a success or a failure.
+</P>
+<P>
+gkellexec displays a panel in gkrellm, with one line per process, showing its
+last exit status (**T** for timeout, **O** for ok, **E** for error) and its
+name.
+</P>
+<H1>Installation</H1>
+<P>
+To build it, just run <I>make</I>. gkrellm's header files must be installed.
+</P>
+<P>
+To install, you can either run <I>make install</I> so that it is copied to
+the default <CODE>/usr/lib/gkrellm2</CODE>; or you can copy gkrellexec.so to
+<CODE>$HOME/.gkrellm2/plugins</CODE>.
+</P>
+<H1>Configuration</H1>
+<P>
 Enable it in gkrellm's plugin configuration.
-
-On the plugins's configuration screen, there is a tab for each process with the configurable options. The process is disabled if it has no name. The shell command is run with _/bin/sh -c "**command**"_, so that shell syntax is fully available.
-
-h1. TODO
-
-* Improve configuration screen layout: align, enlarge command line text box.
-* Change status indicator from a char to a pixmap - use network pixmaps?
-* Allow configurable number of processes.
+</P>
+<P>
+On the plugins's configuration screen, there is a tab for each process with the
+configurable options. The process is disabled if it has no name. The shell
+command is run with <I>/bin/sh -c "**command**"</I>, so that shell syntax is fully
+available.
+</P>
+<H1>TODO</H1>
+<UL>
+<LI>Improve configuration screen layout: align, enlarge command line text box.
+<LI>Change status indicator from a char to a pixmap - use network pixmaps?
+<LI>Allow configurable number of processes.
+</UL>
 
