@@ -213,7 +213,6 @@ static void update_plugin(void)
 
 static void create_plugin(GtkWidget *vbox, gint firstcreate)
 {
-	GkrellmMargin *margin;
 	int i;
 	gint prevy = 0;
 	gint prevh = 0;
@@ -224,7 +223,6 @@ static void create_plugin(GtkWidget *vbox, gint firstcreate)
 	GkrExec.vbox = vbox;
 	GkrExec.style = gkrellm_meter_style(GkrExec.style_id);
 	GkrExec.textstyle = gkrellm_meter_textstyle(GkrExec.style_id);
-	margin = gkrellm_get_style_margins(GkrExec.style);
 
 	for (i = 0; i < NMEMB(GkrExec.proc); i++) {
 		memset(&GkrExec.proc[i].sts, 0, sizeof(GkrExec.proc[i].sts));
