@@ -1,0 +1,19 @@
+gkrellexec (1.0.3-2) unstable; urgency=medium
+
+  * Maintain debianization together with package, and use packagecloud's
+    repositories.
+
+ -- Leandro Lisboa Penz <lpenz@lpenz.org>  Sat, 11 Jun 2016 19:27:25 -0300
+
+gkrellexec (1.0.3-1) unstable; urgency=low
+
+  * Compilation fixed for new gcc.
+  * Signing package with new key.
+
+ -- Leandro Lisboa Penz <lpenz@lpenz.org>  Sun, 17 Mar 2013 10:11:23 -0300
+
+gkrellexec (1.0.2-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Leandro Lisboa Penz <llpenz@gmail.com>  Sun, 06 Dec 2009 22:35:12 -0200
