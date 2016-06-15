@@ -1,6 +1,11 @@
 gkrellexec
 
 
+%!postproc(html): '!BADGE!' '<a href="https://app.shippable.com/projects/550792ba5ab6cc13529ee0c8"><img src="https://api.shippable.com/projects/550792ba5ab6cc13529ee0c8/badge?branch=master" alt="Run status"></img></a>'
+%!postproc(man): '!BADGE!' ''
+
+!BADGE!
+
 
 = Introduction =
 

@@ -1,4 +1,9 @@
+<P>
+<a href="https://app.shippable.com/projects/550792ba5ab6cc13529ee0c8"><img src="https://api.shippable.com/projects/550792ba5ab6cc13529ee0c8/badge?branch=master" alt="Run status"></img></a>
+</P>
+
 <H1>Introduction</H1>
+
 <P>
 **gkrellexec** is a plugin for gkrellm that displays the return status of
 arbitrary shell commands.
@@ -12,7 +17,9 @@ gkellexec displays a panel in gkrellm, with one line per process, showing its
 last exit status (**T** for timeout, **O** for ok, **E** for error) and its
 name.
 </P>
+
 <H1>Installation</H1>
+
 <P>
 To build it, just run <I>make</I>. gkrellm's header files must be installed.
 </P>
@@ -21,7 +28,9 @@ To install, you can either run <I>make install</I> so that it is copied to
 the default <CODE>/usr/lib/gkrellm2</CODE>; or you can copy gkrellexec.so to
 <CODE>$HOME/.gkrellm2/plugins</CODE>.
 </P>
+
 <H1>Configuration</H1>
+
 <P>
 Enable it in gkrellm's plugin configuration.
 </P>
@@ -31,7 +40,9 @@ configurable options. The process is disabled if it has no name. The shell
 command is run with <I>/bin/sh -c "**command**"</I>, so that shell syntax is fully
 available.
 </P>
+
 <H1>TODO</H1>
+
 <UL>
 <LI>Improve configuration screen layout: align, enlarge command line text box.
 <LI>Change status indicator from a char to a pixmap - use network pixmaps?
