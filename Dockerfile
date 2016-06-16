@@ -8,6 +8,7 @@ RUN set -x -e; \
         locales \
         pkg-config gkrellm libgtk2.0-dev txt2tags gcc \
         devscripts fakeroot debhelper build-essential \
+        clang-format \
         ruby \
         gosu sudo
 

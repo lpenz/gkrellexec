@@ -11,6 +11,9 @@ build:
     pull: false
     options: "-v $PWD:/home/user/work -e MY_UID=$UID"
   ci:
+    - |
+      find . -name '*.[ch]' -o -name '*.cc' -exec clang-format '-style={BasedOnStyle: google, IndentWidth: 4}' -i {} +
+    - git diff --exit-code
     - make
     - dpkg-buildpackage -uc -us
   on_success:
