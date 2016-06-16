@@ -24,7 +24,7 @@
 static gchar AboutText[] = "GKrellM Exec version " GKRELLEXEC_VERSION
                            "\n\n\n"
                            "Copyright (C) 2009 by Leandro Penz\n"
-                           "llpenz@gmail.com\n"
+                           "lpenz@lpenz.org\n"
                            "http://github.com/lpenz/gkrellexec\n"
                            "Released under the GPL\n";
 
