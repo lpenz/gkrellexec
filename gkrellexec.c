@@ -12,7 +12,7 @@
 #include <gkrellm2/gkrellm.h>
 
 #define PROGRAM_NAME "gkrellexec"
-#define PROGRAM_VERSION "1.0.3"
+#define PROGRAM_VERSION "1.0.4"
 
 #define CONFIG_KEYWORD PROGRAM_NAME
 #define GKRELLEXEC_VERSION PROGRAM_VERSION
