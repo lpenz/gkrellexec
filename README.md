@@ -1,13 +1,9 @@
-gkrellexec
+[![Run Status](https://api.shippable.com/projects/550792ba5ab6cc13529ee0c8/badge?branch=master)](https://app.shippable.com/projects/550792ba5ab6cc13529ee0c8)
+# gkrellexec
 
 
-%!postproc(html): '!BADGE!' '<a href="https://app.shippable.com/projects/550792ba5ab6cc13529ee0c8"><img src="https://api.shippable.com/projects/550792ba5ab6cc13529ee0c8/badge?branch=master" alt="Run status"></img></a>'
-%!postproc(man): '!BADGE!' ''
 
-!BADGE!
-
-
-= Introduction =
+## Introduction
 
 **gkrellexec** is a plugin for gkrellm that displays the return status of
 arbitrary shell commands.
@@ -21,32 +17,41 @@ name.
 
 
 
-= Installation =
+## Installation
 
-To build it, just run //make//. gkrellm's header files must be installed.
 
-To install, you can either run //make install// so that it is copied to
-the default ``/usr/lib/gkrellm2``; or you can copy gkrellexec.so to
+
+### Debian
+
+gkrellexec's debian package is kept in https://packagecloud.io/lpenz/lpenz.
+Follow the link for installation instructions.
+
+
+
+### Manually
+
+To build it, just run *make*. gkrellm's header files must be installed.
+
+To install, you can either run *make install* so that it is copied to
+the default ``/usr/lib/gkrellm2`` or you can copy gkrellexec.so to
 ``$HOME/.gkrellm2/plugins``.
 
 
 
-= Configuration =
+## Configuration
 
 Enable it in gkrellm's plugin configuration.
 
 On the plugins's configuration screen, there is a tab for each process with the
 configurable options. The process is disabled if it has no name. The shell
-command is run with ///bin/sh -c "**command**"//, so that shell syntax is fully
+command is run with ``/bin/sh -c "<command>"``, so that shell syntax is fully
 available.
 
 
 
-= TODO =
+## TODO
 
 - Improve configuration screen layout: align, enlarge command line text box.
 - Change status indicator from a char to a pixmap - use network pixmaps?
 - Allow configurable number of processes.
-
-
 

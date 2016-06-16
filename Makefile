@@ -9,7 +9,7 @@ CPPFLAGS = -Wall -Werror
 CFLAGS = -O2 -fPIC $(GTK2_INCLUDE)
 LDLIBS = $(GTK2_LIB)
 
-all: gkrellexec.so README.html
+all: gkrellexec.so
 
 .PHONY: all install clean
 
@@ -26,11 +26,3 @@ clean:
 
 %.so: %.o
 	$(CC) -shared $(LDFLAGS) -o $@ $^ $(LOADLIBES) $(LDLIBS)
-
-README.textile: gkrellexec.t2t
-	txt2tags -t html -H -i $^ -o $@
-	sed -i -e 's@<B>@**@g' -e 's@</B>@**@g' $@
-
-README.html: gkrellexec.t2t
-	txt2tags -t html -i $< -o $@
-
