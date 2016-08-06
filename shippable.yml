@@ -18,4 +18,4 @@ build:
     - dpkg-buildpackage -uc -us
   on_success:
     - cd ..
-    - package_cloud push lpenz/lpenz/debian/stretch *.deb
+    - package_cloud push lpenz/lpenz/debian/stretch *.deb || true
