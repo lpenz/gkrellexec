@@ -1,4 +1,4 @@
-[![Run Status](https://api.shippable.com/projects/550792ba5ab6cc13529ee0c8/badge?branch=master)](https://app.shippable.com/projects/550792ba5ab6cc13529ee0c8)
+[![Build Status](https://travis-ci.org/lpenz/gkrellexec.svg?branch=master)](https://travis-ci.org/lpenz/gkrellexec)
 # gkrellexec
 
 
