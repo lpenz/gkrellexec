@@ -13,7 +13,8 @@ addons:
       - txt2tags
 language: c
 compiler:
-   - gcc
+  - gcc
+  - clang
 script:
   - make
   - dpkg-buildpackage -uc -us
