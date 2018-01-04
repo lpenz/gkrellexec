@@ -1,4 +1,7 @@
 ---
+sudo: required # docker
+services:
+  - docker
 addons:
   apt:
     packages:
@@ -9,15 +12,29 @@ addons:
       - fakeroot
       - debhelper
       - build-essential
-      - ruby
       - txt2tags
+jobs:
+  include:
+    - env: [ ACTION=build ]
+      compiler: gcc
+    - env: [ ACTION=build ]
+      compiler: clang
+    - env: [ ACTION=omnilint ]
+    - env: [ ACTION=format ]
 language: c
-compiler:
-  - gcc
-  - clang
 script:
-  - make
-  - dpkg-buildpackage -uc -us
+  - |
+    if [ "$ACTION" = omnilint ]; then
+        docker pull lpenz/omnilint
+        docker run --rm -v "$PWD:$PWD" -e "RWD=$PWD" -e "MY_UID=$UID" lpenz/omnilint
+    elif [ "$ACTION" = format ]; then
+        docker build -t image:latest .
+        docker run -v $PWD:/home/user/work -e MY_UID=$UID find . -name '*.[ch]' -o -name '*.cc' -exec clang-format '-style={BasedOnStyle: google, IndentWidth: 4}' -i {} +
+        git diff --exit-code
+    else
+        make
+        dpkg-buildpackage -uc -us
+    fi
 deploy:
   provider: packagecloud
   repository: lpenz
@@ -29,4 +46,4 @@ deploy:
   package_glob: '*.deb'
   on:
     tags: true
-    condition: "$CC = gcc"
+    condition: "$CC = gcc && $ACTION = build"
