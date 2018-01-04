@@ -107,7 +107,7 @@ static long uptime(void) {
 /****************************************************************************/
 
 static void update_plugin(void) {
-    int i;
+    size_t i;
     int status;
     long upt;
     GkrellmTicks *t = gkrellm_ticks();
@@ -193,7 +193,7 @@ static void update_plugin(void) {
     }
 
     for (i = 0; i < NMEMB(GkrExec.proc); i++) {
-        char tmp[60];
+        char tmp[4 + sizeof GkrExec.proc[i].cfg.name];
 
         if (!GkrExec.proc[i].cfg.name[0]) continue;
 
@@ -211,7 +211,7 @@ static void update_plugin(void) {
 /****************************************************************************/
 
 static void create_plugin(GtkWidget *vbox, gint firstcreate) {
-    int i;
+    size_t i;
     gint prevy = 0;
     gint prevh = 0;
 
@@ -270,7 +270,7 @@ static void create_plugin_tab(GtkWidget *tab_vbox) {
     GtkWidget *text;
     GtkWidget *label;
     GtkWidget *vbox;
-    int i;
+    size_t i;
 
     tabs = gtk_notebook_new();
     gtk_notebook_set_tab_pos(GTK_NOTEBOOK(tabs), GTK_POS_TOP);
@@ -281,7 +281,7 @@ static void create_plugin_tab(GtkWidget *tab_vbox) {
         char tmp[256];
 
         /* Tab: */
-        snprintf(tmp, sizeof tmp, "Process %d", i + 1);
+        snprintf(tmp, sizeof tmp, "Process %zu", i + 1);
         vbox0 = gkrellm_gtk_framed_notebook_page(tabs, tmp);
 
         GkrExec.proc[i].widget.name =
@@ -317,7 +317,7 @@ static void create_plugin_tab(GtkWidget *tab_vbox) {
 }
 
 static void apply_plugin_config(void) {
-    int i;
+    size_t i;
 
     for (i = 0; i < NMEMB(GkrExec.proc); i++) {
         snprintf(GkrExec.proc[i].cfg.name, sizeof(GkrExec.proc[i].cfg.name),
@@ -341,18 +341,18 @@ static void apply_plugin_config(void) {
 /****************************************************************************/
 
 static void save_plugin_config(FILE *f) {
-    int i;
+    size_t i;
 
     for (i = 0; i < NMEMB(GkrExec.proc); i++) {
         if (GkrExec.proc[i].cfg.name[0] == 0) continue;
-        fprintf(f, CONFIG_KEYWORD " name %d %s\n", i, GkrExec.proc[i].cfg.name);
-        fprintf(f, CONFIG_KEYWORD " cmdline %d %s\n", i,
+        fprintf(f, CONFIG_KEYWORD " name %zu %s\n", i, GkrExec.proc[i].cfg.name);
+        fprintf(f, CONFIG_KEYWORD " cmdline %zu %s\n", i,
                 GkrExec.proc[i].cfg.cmdline);
-        fprintf(f, CONFIG_KEYWORD " timeout %d %d\n", i,
+        fprintf(f, CONFIG_KEYWORD " timeout %zu %d\n", i,
                 GkrExec.proc[i].cfg.timeout);
-        fprintf(f, CONFIG_KEYWORD " sleepok %d %d\n", i,
+        fprintf(f, CONFIG_KEYWORD " sleepok %zu %d\n", i,
                 GkrExec.proc[i].cfg.sleepok);
-        fprintf(f, CONFIG_KEYWORD " sleeperr %d %d\n", i,
+        fprintf(f, CONFIG_KEYWORD " sleeperr %zu %d\n", i,
                 GkrExec.proc[i].cfg.sleeperr);
     }
 }
