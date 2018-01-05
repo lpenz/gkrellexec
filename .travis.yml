@@ -5,6 +5,7 @@ services:
 addons:
   apt:
     packages:
+      - cmake
       - pkg-config
       - gkrellm
       - libgtk2.0-dev

@@ -6,7 +6,7 @@ RUN set -x -e; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         locales \
-        pkg-config gkrellm libgtk2.0-dev txt2tags gcc \
+        cmake pkg-config gkrellm libgtk2.0-dev txt2tags gcc \
         devscripts fakeroot debhelper build-essential \
         clang-format \
         gosu sudo
