@@ -29,7 +29,7 @@ script:
         docker run --rm -v "$PWD:$PWD" -e "RWD=$PWD" -e "MY_UID=$UID" lpenz/omnilint
     elif [ "$ACTION" = format ]; then
         docker build -t image:latest .
-        docker run -v $PWD:/home/user/work -e MY_UID=$UID find . -name '*.[ch]' -o -name '*.cc' -exec clang-format '-style={BasedOnStyle: google, IndentWidth: 4}' -i {} +
+        docker run -v $PWD:/home/user/work -e MY_UID=$UID image find . -name '*.[ch]' -o -name '*.cc' -exec clang-format '-style={BasedOnStyle: google, IndentWidth: 4}' -i {} +
         git diff --exit-code
     else
         make
