@@ -9,7 +9,6 @@ RUN set -x -e; \
         pkg-config gkrellm libgtk2.0-dev txt2tags gcc \
         devscripts fakeroot debhelper build-essential \
         clang-format \
-        ruby \
         gosu sudo
 
 # setup sudo and locale
@@ -19,10 +18,6 @@ RUN set -x -e; \
     echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen; \
     locale-gen
 ENV LC_ALL=en_US.UTF-8
-
-# install packagecloud's gem
-RUN set -x -e; \
-    gem install package_cloud
 
 # setup entrypoint with user UID/GID from host
 RUN set -x -e; \
