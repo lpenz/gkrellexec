@@ -32,8 +32,8 @@ script:
         docker run -v $PWD:/home/user/work -e MY_UID=$UID image find . -name '*.[ch]' -o -name '*.cc' -exec clang-format '-style={BasedOnStyle: google, IndentWidth: 4}' -i {} +
         git diff --exit-code
     else
-        make
-        dpkg-buildpackage -uc -us
+        docker build -t image:latest .
+        docker run -v $PWD/..:/home/user/work -e MY_UID=$UID image /bin/sh -c 'cd gkrellexec && dpkg-buildpackage -uc -us'
     fi
 deploy:
   provider: packagecloud
