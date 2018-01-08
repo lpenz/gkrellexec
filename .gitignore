@@ -1,0 +1,6 @@
+/debian/.debhelper/
+/debian/debhelper-build-stamp
+/debian/files
+/debian/gkrellexec.substvars
+/debian/gkrellexec/
+/obj-x86_64-linux-gnu/
