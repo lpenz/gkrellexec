@@ -9,11 +9,6 @@ addons:
       - pkg-config
       - gkrellm
       - libgtk2.0-dev
-      - devscripts
-      - fakeroot
-      - debhelper
-      - build-essential
-      - txt2tags
 jobs:
   include:
     - env: [ ACTION=build ]
@@ -33,18 +28,9 @@ script:
         docker run -v $PWD:/home/user/work -e MY_UID=$UID image find . -name '*.[ch]' -o -name '*.cc' -exec clang-format '-style={BasedOnStyle: google, IndentWidth: 4}' -i {} +
         git diff --exit-code
     else
-        docker build -t image:latest .
-        docker run -v $PWD/..:/home/user/work -e MY_UID=$UID image /bin/sh -c 'cd gkrellexec && dpkg-buildpackage -uc -us'
+        SRC_DIR=$PWD
+        mkdir ../build
+        cd ../build
+        cmake "$SRC_DIR"
+        make
     fi
-deploy:
-  provider: packagecloud
-  repository: lpenz
-  username: lpenz
-  token:
-    secure: g26ixB08/ggWL3aMXIjJAGZq0ALhjKcwPiXCTYOFDA8A6MpYALdKrl6Tm7k2NweVU5AYseIzJ/ufF9R/4MTGk8u6V/f8HK7tVy/1wu/+ne1va8E5WJR8ZNuMjzkTnCaik7RnT2Qri06v2TlC4rRJwc6N+iB62R4XvQFA/rq5MtU=
-  dist: debian/stretch
-  local-dir: '..'
-  package_glob: '*.deb'
-  on:
-    tags: true
-    condition: "$CC = gcc && $ACTION = build"
