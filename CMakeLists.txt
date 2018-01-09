@@ -18,3 +18,7 @@ include_directories ("${GTK2_INCLUDE_DIRS}")
 add_library (gkrellexec
   SHARED
   gkrellexec.c)
+
+install (TARGETS gkrellexec
+  DESTINATION lib/gkrellm2/plugins
+  )
