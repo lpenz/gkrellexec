@@ -1,3 +1,9 @@
+gkrellexec (1.0.5-1) UNRELEASED; urgency=low
+
+  * New upstream release: static warnings fixed.
+
+ -- Leandro Lisboa Penz <lpenz@lpenz.org>  Wed, 10 Jan 2018 10:34:59 -0200
+
 gkrellexec (1.0.4-1) unstable; urgency=low
 
   * Initial Release.
