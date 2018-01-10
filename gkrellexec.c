@@ -127,16 +127,14 @@ static void update_plugin(void) {
                 /* Unknown */
                 GkrExec.proc[i].sts.last == &ProcStatusUnknown
                 /* Ok and sleepok gone */
-                ||
-                (GkrExec.proc[i].sts.last == &ProcStatusOk &&
-                 uptime() - GkrExec.proc[i].sts.uptend >
-                     GkrExec.proc[i].cfg.sleepok)
+                || (GkrExec.proc[i].sts.last == &ProcStatusOk &&
+                    uptime() - GkrExec.proc[i].sts.uptend >
+                        GkrExec.proc[i].cfg.sleepok)
                 /* Error or timeout and sleeperr gone */
-                ||
-                ((GkrExec.proc[i].sts.last == &ProcStatusError ||
-                  GkrExec.proc[i].sts.last == &ProcStatusTimeout) &&
-                 uptime() - GkrExec.proc[i].sts.uptend >
-                     GkrExec.proc[i].cfg.sleeperr))) {
+                || ((GkrExec.proc[i].sts.last == &ProcStatusError ||
+                     GkrExec.proc[i].sts.last == &ProcStatusTimeout) &&
+                    uptime() - GkrExec.proc[i].sts.uptend >
+                        GkrExec.proc[i].cfg.sleeperr))) {
             GkrExec.proc[i].sts.pid = fork();
             switch (GkrExec.proc[i].sts.pid) {
                 case -1:
@@ -345,7 +343,8 @@ static void save_plugin_config(FILE *f) {
 
     for (i = 0; i < NMEMB(GkrExec.proc); i++) {
         if (GkrExec.proc[i].cfg.name[0] == 0) continue;
-        fprintf(f, CONFIG_KEYWORD " name %zu %s\n", i, GkrExec.proc[i].cfg.name);
+        fprintf(f, CONFIG_KEYWORD " name %zu %s\n", i,
+                GkrExec.proc[i].cfg.name);
         fprintf(f, CONFIG_KEYWORD " cmdline %zu %s\n", i,
                 GkrExec.proc[i].cfg.cmdline);
         fprintf(f, CONFIG_KEYWORD " timeout %zu %d\n", i,
