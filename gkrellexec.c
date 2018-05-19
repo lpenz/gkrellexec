@@ -1,10 +1,12 @@
-/****************************************************************************/
+// Copyright (C) 2009 Leandro Lisboa Penz <lpenz@lpenz.org>
+// This file is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package.
+
 /**
  * \file
  * \brief  A gkrellm plugin that displays the exit status of arbitrary shell
  * comands.
  */
-/****************************************************************************/
 
 #include <sys/sysinfo.h>
 #include <sys/wait.h>
