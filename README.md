@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/lpenz/gkrellexec.svg?branch=master)](https://travis-ci.org/lpenz/gkrellexec)
+[![packagecloud](https://img.shields.io/badge/deb-packagecloud.io-844fec.svg)](https://packagecloud.io/app/lpenz/lpenz/search?q=gkrellexec)
 
 gkrellexec
 ==========
