@@ -1,3 +1,9 @@
+gkrellexec (1.0.5-2) UNRELEASED; urgency=low
+
+  * Also build for i386 and armhf
+
+ -- Leandro Lisboa Penz <lpenz@lpenz.org>  Sun, 16 Dec 2018 23:08:08 +0000
+
 gkrellexec (1.0.5-1) UNRELEASED; urgency=low
 
   * New upstream release: static warnings fixed.
