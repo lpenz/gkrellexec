@@ -34,7 +34,10 @@ static gchar *HelpText[] = {
     "<h>" CONFIG_KEYWORD "\n\n",
     "gkellexec displays one line per process, with its name and exit "
     "status\n\n",
-    "<b>Exit codes\n", "- O: ok\n", "- E: error\n", "- T: timeout\n\n",
+    "<b>Exit codes\n",
+    "- O: ok\n",
+    "- E: error\n",
+    "- T: timeout\n\n",
     "<b>Configuration options\n",
     "- Name: name of process, displayed in panel; clear it to disable "
     "process.\n",
