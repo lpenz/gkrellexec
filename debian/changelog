@@ -1,3 +1,9 @@
+gkrellexec (1.0.5-3) UNRELEASED; urgency=low
+
+  * Update to Debian Buster
+
+ -- Leandro Lisboa Penz <lpenz@lpenz.org>  Thu, 10 Oct 2019 23:07:22 +0100
+
 gkrellexec (1.0.5-2) UNRELEASED; urgency=low
 
   * Also build for i386 and armhf
