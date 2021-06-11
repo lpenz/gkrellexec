@@ -33,3 +33,16 @@ install (
     DESTINATION ${CMAKE_INSTALL_DOCDIR}/
     )
 
+# cpack deb
+
+set(CPACK_GENERATOR DEB)
+set(CPACK_PACKAGE_CONTACT "Leandro Lisboa Penz <lpenz@lpenz.org>")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "gkrellm plugin that displays the return status of arbitrary shell commands")
+set(CPACK_DEBIAN_PACKAGE_SECTION utils)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+execute_process(COMMAND git describe --tags
+                OUTPUT_VARIABLE GIT_DESCRIBE)
+string(REGEX REPLACE "-g[0-9a-f]+\n$" "" CPACK_PACKAGE_VERSION "${GIT_DESCRIBE}")
+set(CPACK_PACKAGE_FILE_NAME "gkrellexec-${CPACK_PACKAGE_VERSION}")
+include(CPack)
+
