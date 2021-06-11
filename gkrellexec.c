@@ -8,10 +8,9 @@
  * comands.
  */
 
+#include <gkrellm2/gkrellm.h>
 #include <sys/sysinfo.h>
 #include <sys/wait.h>
-
-#include <gkrellm2/gkrellm.h>
 
 #define PROGRAM_NAME "gkrellexec"
 #define PROGRAM_VERSION "1.0.4"
