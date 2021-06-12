@@ -9,12 +9,6 @@ jobs:
             - cppcheck
             - clang-tidy
             - install
-            - clang-sanitizer-address
-            - clang-sanitizer-memory
-            - clang-sanitizer-undefined
-            - clang-sanitizer-dataflow
-            - clang-sanitizer-safe-stack
-            - valgrind
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
