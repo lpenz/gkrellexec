@@ -1,5 +1,5 @@
 [![CI](https://github.com/lpenz/gkrellexec/actions/workflows/ci.yml/badge.svg)](https://github.com/lpenz/gkrellexec/actions/workflows/ci.yml)
-[![packagecloud](https://img.shields.io/badge/deb-packagecloud.io-844fec.svg)](https://packagecloud.io/app/lpenz/lpenz/search?q=gkrellexec)
+[![packagecloud](https://img.shields.io/badge/deb-packagecloud.io-844fec.svg)](https://packagecloud.io/app/lpenz/debian/search?q=gkrellexec)
 
 gkrellexec
 ==========
@@ -22,7 +22,7 @@ name.
 
 ## Debian
 
-gkrellexec's debian package is kept in https://packagecloud.io/lpenz/lpenz.
+gkrellexec's debian package is kept in https://packagecloud.io/lpenz/debian.
 Follow the link for installation instructions.
 
 
