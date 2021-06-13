@@ -4,8 +4,6 @@
 gkrellexec
 ==========
 
-# Introduction
-
 **gkrellexec** is a plugin for gkrellm that displays the return status of
 arbitrary shell commands.
 
@@ -17,16 +15,16 @@ last exit status (**T** for timeout, **O** for ok, **E** for error) and its
 name.
 
 
-# Installation
+## Installation
 
 
-## Debian
+### Debian
 
 gkrellexec's debian package is kept in https://packagecloud.io/lpenz/debian.
 Follow the link for installation instructions.
 
 
-## Manually
+### Manually
 
 To build it, run *cmake .* and then *make*. gkrellm's header files must be
 installed.
@@ -36,7 +34,7 @@ to the default ``/usr/lib/gkrellm2`` or you can copy it to
 ``$HOME/.gkrellm2/plugins``.
 
 
-# Configuration
+## Configuration
 
 Enable it in gkrellm's plugin configuration.
 
