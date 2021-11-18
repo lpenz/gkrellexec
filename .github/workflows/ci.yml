@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: docker://lpenz/ghaction-cmake:latest
         with:
-          dependencies_debian: gkrellm libgtk2.0-dev
+          dependencies_debian: gkrellm libgtk2.0-dev asdf
           preset: ${{ matrix.preset }}
   clang-format:
     runs-on: ubuntu-latest
@@ -35,7 +35,7 @@ jobs:
           fetch-depth: 0
       - uses: docker://lpenz/ghaction-cmake:latest
         with:
-          dependencies_debian: gkrellm libgtk2.0-dev
+          dependencies_debian: gkrellm libgtk2.0-dev asdf
           preset: cpack
       - run: |
           dpkg --info *.deb
