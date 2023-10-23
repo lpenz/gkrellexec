@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.1.0
-      - uses: docker://lpenz/ghaction-cmake:0.21.0
+      - uses: docker://lpenz/ghaction-cmake:0.22.0
         with:
           dependencies_debian: gkrellm libgtk2.0-dev
           preset: ${{ matrix.preset }}
@@ -32,32 +32,32 @@ jobs:
     strategy:
       matrix:
         variant:
-          - image: amd64
+          - image: debian-bullseye-amd64
             distro: debian
             version: bullseye
-          - image: ubuntu-focal-amd64
+          - image: debian-bookworm-amd64
+            distro: debian
+            version: bookworm
+          - image: ubuntu-jammy-amd64
             distro: ubuntu
-            version: focal
-          - image: raspbian-bullseye-armhf
-            distro: raspbian
-            version: bullseye
+            version: jammy
     steps:
       - uses: actions/checkout@v3.1.0
         with:
           fetch-depth: 0
       - uses: docker/setup-qemu-action@v2.1.0
-      - uses: docker://lpenz/ghaction-cmake:0.21.0-amd64
-        if: matrix.variant.image == 'amd64'
+      - uses: docker://lpenz/ghaction-cmake:0.22.0-debian-bullseye-amd64
+        if: matrix.variant.image == 'debian-bullseye-amd64'
         with:
           preset: cpack
           dependencies_debian: gkrellm libgtk2.0-dev
-      - uses: docker://lpenz/ghaction-cmake:0.21.0-ubuntu-focal-amd64
-        if: matrix.variant.image == 'ubuntu-focal-amd64'
+      - uses: docker://lpenz/ghaction-cmake:0.22.0-debian-bookworm-amd64
+        if: matrix.variant.image == 'debian-bookworm-amd64'
         with:
           preset: cpack
           dependencies_debian: gkrellm libgtk2.0-dev
-      - uses: docker://lpenz/ghaction-cmake:0.21.0-raspbian-bullseye-armhf
-        if: matrix.variant.image == 'raspbian-bullseye-armhf'
+      - uses: docker://lpenz/ghaction-cmake:0.22.0-ubuntu-jammy-amd64
+        if: matrix.variant.image == 'ubuntu-jammy-amd64'
         with:
           preset: cpack
           dependencies_debian: gkrellm libgtk2.0-dev
