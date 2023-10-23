@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:bookworm
 
 # install debian packages:
 ENV DEBIAN_FRONTEND=noninteractive
