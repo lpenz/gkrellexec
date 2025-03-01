@@ -5,8 +5,8 @@ jobs:
   omnilint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
-      - uses: docker://lpenz/omnilint:0.5
+      - uses: actions/checkout@v4.2.2
+      - uses: docker://lpenz/omnilint:0.5.2
   tests:
     strategy:
         matrix:
@@ -16,59 +16,66 @@ jobs:
             - install
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
-      - uses: docker://lpenz/ghaction-cmake:0.22.0
+      - uses: actions/checkout@v4.2.2
+      - uses: docker://lpenz/ghaction-cmake:0.23.0
         with:
           dependencies_debian: gkrellm libgtk2.0-dev
           preset: ${{ matrix.preset }}
   clang-format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
-      - uses: DoozyX/clang-format-lint-action@v0.14
+      - uses: actions/checkout@v4.2.2
+      - uses: DoozyX/clang-format-lint-action@v0.18.2
   publish-packagecloud:
     needs: [ omnilint, clang-format, tests ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
         variant:
-          - image: debian-bullseye-amd64
-            distro: debian
-            version: bullseye
           - image: debian-bookworm-amd64
             distro: debian
             version: bookworm
-          - image: ubuntu-jammy-amd64
+          - image: debian-trixie-amd64
+            distro: debian
+            version: trixie
+          - image: ubuntu-noble-amd64
             distro: ubuntu
-            version: jammy
+            version: noble
+          - image: raspbian-bookworm-armhf
+            distro: raspbian
+            version: bookworm
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
-      - uses: docker/setup-qemu-action@v2.1.0
-      - uses: docker://lpenz/ghaction-cmake:0.22.0-debian-bullseye-amd64
-        if: matrix.variant.image == 'debian-bullseye-amd64'
-        with:
-          preset: cpack
-          dependencies_debian: gkrellm libgtk2.0-dev
-      - uses: docker://lpenz/ghaction-cmake:0.22.0-debian-bookworm-amd64
+      - uses: docker/setup-qemu-action@v3.6.0
+      - uses: docker://lpenz/ghaction-cmake:0.23.0
         if: matrix.variant.image == 'debian-bookworm-amd64'
         with:
           preset: cpack
           dependencies_debian: gkrellm libgtk2.0-dev
-      - uses: docker://lpenz/ghaction-cmake:0.22.0-ubuntu-jammy-amd64
-        if: matrix.variant.image == 'ubuntu-jammy-amd64'
+      - uses: docker://lpenz/ghaction-cmake:0.23.0
+        if: matrix.variant.image == 'debian-trixie-amd64'
+        with:
+          preset: cpack
+          dependencies_debian: gkrellm libgtk2.0-dev
+      - uses: docker://lpenz/ghaction-cmake:0.23.0
+        if: matrix.variant.image == 'ubuntu-noble-amd64'
+        with:
+          preset: cpack
+          dependencies_debian: gkrellm libgtk2.0-dev
+      - uses: docker://lpenz/ghaction-cmake:0.23.0
+        if: matrix.variant.image == 'raspbian-bookworm-armhf'
         with:
           preset: cpack
           dependencies_debian: gkrellm libgtk2.0-dev
       - run: |
           for f in *.deb; do ls -l "$f"; dpkg --info "$f"; done
       - id: version
-        uses: docker://lpenz/ghaction-version-gen:0.11.0
+        uses: docker://lpenz/ghaction-version-gen:0.14.1
       - uses: docker://lpenz/ghaction-packagecloud:0.4
         if: steps.version.outputs.version_commit != ''
         with:
           repository: ${{ matrix.variant.distro }}/${{ matrix.variant.distro }}/${{ matrix.variant.version }}
         env:
           PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
-
